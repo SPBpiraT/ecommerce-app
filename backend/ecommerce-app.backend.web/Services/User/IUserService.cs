@@ -8,6 +8,8 @@ namespace ecommerce_app.backend.web.Services.User
 
         Task<UserModel> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
 
+        Task<bool> IsUsernameExistsAsync(string username, CancellationToken cancellationToken = default);
+
         Task<UserModel> CreateAsync(UserModel model, CancellationToken cancellationToken = default);
     }
 }
