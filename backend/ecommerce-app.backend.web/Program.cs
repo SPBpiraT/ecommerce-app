@@ -1,3 +1,4 @@
+using ecommerce_app.backend.web.Common;
 using ecommerce_app.backend.web.Middlewares;
 using ecommerce_app.backend.web.Services.Auth;
 using ecommerce_app.backend.web.Services.User;
@@ -13,6 +14,7 @@ builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connec
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
+builder.Services.AddCommonServices();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
