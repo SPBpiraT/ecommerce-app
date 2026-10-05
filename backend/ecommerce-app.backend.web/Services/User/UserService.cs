@@ -3,6 +3,7 @@ using ecommerce_app.backend.web.Models.User;
 using System.Data;
 using Dapper;
 using ecommerce_app.backend.web.Entities;
+using ecommerce_app.backend.web.Common.Providers;
 
 namespace ecommerce_app.backend.web.Services.User
 {
@@ -10,23 +11,60 @@ namespace ecommerce_app.backend.web.Services.User
     {
         private readonly ILogger<UserService> _logger;
         private readonly IDbConnection _dbConnection;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public UserService(
             ILogger<UserService> logger,
-            IDbConnection dbConnection)
+            IDbConnection dbConnection,
+            IDateTimeProvider dateTimeProvider)
         {
             _logger = logger;
             _dbConnection = dbConnection;
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<UserModel> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<UserModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            const string sql = @"
+                SELECT 
+                    id, 
+                    created, 
+                    updated, 
+                    username, 
+                    email, 
+                    password_hash AS passwordhash, 
+                    password_salt AS passwordsalt, 
+                    role
+               FROM users 
+               WHERE id = @id 
+                AND is_active = true";
+
+            return await _dbConnection.QueryFirstOrDefaultAsync<UserModel>(new CommandDefinition(
+                sql,
+                new { Id = id },
+                cancellationToken: cancellationToken));
         }
 
-        public async Task<UserModel> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
+        public async Task<UserModel?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            const string sql = @"
+                SELECT 
+                    id, 
+                    created, 
+                    updated, 
+                    username, 
+                    email, 
+                    password_hash AS passwordhash, 
+                    password_salt AS passwordsalt, 
+                    role
+               FROM users 
+               WHERE username = @Username 
+                AND is_active = true";
+
+            return await _dbConnection.QueryFirstOrDefaultAsync<UserModel>(new CommandDefinition(
+                sql,
+                new { Username = username },
+                cancellationToken: cancellationToken));
         }
 
         public async Task<bool> IsUsernameExistsAsync(string username, CancellationToken cancellationToken = default)
@@ -43,7 +81,7 @@ namespace ecommerce_app.backend.web.Services.User
         {
             var userId = Guid.NewGuid();
             var userInfoId = Guid.NewGuid();
-            var now = DateTime.UtcNow; // TODO: DateTimeProvider
+            var now = _dateTimeProvider.UtcNow;
 
             var user = new Entities.User
             {

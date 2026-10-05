@@ -23,7 +23,22 @@ namespace ecommerce_app.backend.web.Services.Auth
 
         public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var user = await _userService.GetByUsernameAsync(request.Username);
+
+            if (user == null)
+                throw new AuthException();
+
+            var isOk = BCryptNet.Verify(request.Password, user.PasswordHash, false, HashType.SHA256);
+
+            if (!isOk)
+                throw new AuthException();
+
+            return new AuthResponse
+            {
+                UserId = user.Id,
+                Username = user.Username,
+                Role = user.Role
+            };
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)

@@ -19,11 +19,11 @@ namespace ecommerce_app.backend.web.Middlewares
             {
                 await _next(context);
             }
-            //catch (AccessDeniedException ade)
-            //{
-            //    context.Response.StatusCode = 403;
-            //    await context.Response.WriteAsJsonAsync(new { Message = "Access denied" });
-            //}
+            catch (AccessDeniedException ade)
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsJsonAsync(new { Message = "Access denied" });
+            }
             catch (AuthException aex)
             {
                 _logger.LogError(aex, "Auth exception");
