@@ -1,7 +1,9 @@
 using ecommerce_app.backend.web.Common;
 using ecommerce_app.backend.web.Middlewares;
 using ecommerce_app.backend.web.Services.Auth;
+using ecommerce_app.backend.web.Services.Email;
 using ecommerce_app.backend.web.Services.User;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
 using System.Data;
@@ -56,7 +58,8 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddCommonServices();
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddCommonServices(builder.Configuration);
 
 var app = builder.Build();
 
