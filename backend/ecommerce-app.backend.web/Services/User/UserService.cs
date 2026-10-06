@@ -1,9 +1,10 @@
 ﻿using ecommerce_app.backend.web.Mapping;
 using ecommerce_app.backend.web.Models.User;
-using System.Data;
-using Dapper;
 using ecommerce_app.backend.web.Entities;
 using ecommerce_app.backend.web.Common.Providers;
+
+using System.Data;
+using Dapper;
 
 namespace ecommerce_app.backend.web.Services.User
 {
@@ -34,7 +35,9 @@ namespace ecommerce_app.backend.web.Services.User
                     email, 
                     password_hash AS passwordhash, 
                     password_salt AS passwordsalt, 
-                    role
+                    role,
+                    is_active AS isactive,
+                    is_email_confirmed AS isemailconfirmed
                FROM users 
                WHERE id = @id 
                 AND is_active = true";
@@ -56,7 +59,9 @@ namespace ecommerce_app.backend.web.Services.User
                     email, 
                     password_hash AS passwordhash, 
                     password_salt AS passwordsalt, 
-                    role
+                    role,
+                    is_active AS isactive,
+                    is_email_confirmed AS isemailconfirmed
                FROM users 
                WHERE username = @Username 
                 AND is_active = true";
@@ -134,6 +139,62 @@ namespace ecommerce_app.backend.web.Services.User
             }
 
             return user.MapToModel();
+        }
+
+        public async Task SaveConfirmationTokenAsync(EmailConfirmationToken token, CancellationToken cancellationToken = default)
+        {
+            const string sql = @"
+                INSERT INTO email_confirmation_tokens (id, user_id, token_hash, expires_at)
+                VALUES (@Id, @UserId, @TokenHash, @ExpiresAt);";
+
+            var command = new CommandDefinition(sql, token, cancellationToken: cancellationToken);
+            await _dbConnection.ExecuteAsync(command);
+        }
+
+        public async Task<EmailConfirmationToken?> GetTokenInfoAsync(string tokenHash, CancellationToken cancellationToken = default)
+        {
+            const string sql = @"
+                SELECT 
+                    id, 
+                    user_id AS userid, 
+                    token_hash AS tokenhash, 
+                    expires_at AS expiresat 
+                FROM email_confirmation_tokens 
+                WHERE token_hash = @TokenHash";
+
+            var command = new CommandDefinition(sql, new { TokenHash = tokenHash }, cancellationToken: cancellationToken);
+            return await _dbConnection.QueryFirstOrDefaultAsync<EmailConfirmationToken>(command);
+        }
+
+        public async Task UpdateUserAsync(UserModel model, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task ConfirmEmailStatusAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            const string sql = @"
+                UPDATE users 
+                SET is_email_confirmed = true,
+                    updated = @Updated
+                WHERE id = @Id";
+
+            var parameters = new
+            {
+                Id = userId,
+                Updated = _dateTimeProvider.UtcNow
+            };
+
+            var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
+            await _dbConnection.ExecuteAsync(command);
+        }
+
+        public async Task DeleteConfirmationTokenAsync(Guid tokenId, CancellationToken cancellationToken = default)
+        {
+            const string sql = "DELETE FROM email_confirmation_tokens WHERE id = @Id";
+
+            var command = new CommandDefinition(sql, new { Id = tokenId }, cancellationToken: cancellationToken);
+            await _dbConnection.ExecuteAsync(command);
         }
     }
 }
