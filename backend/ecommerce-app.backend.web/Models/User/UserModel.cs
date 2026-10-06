@@ -10,5 +10,7 @@
         public string PasswordHash { get; init; }
         public string PasswordSalt { get; init; }
         public string Role { get; init; }
+        public bool IsActive { get; init; }
+        public bool IsEmailConfirmed { get; init; }
     }
 }
