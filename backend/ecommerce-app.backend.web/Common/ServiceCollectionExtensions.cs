@@ -11,6 +11,7 @@ namespace ecommerce_app.backend.web.Common
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
+            services.Configure<YooKassaSettings>(configuration.GetSection("YooKassaSettings"));
 
             return services;
         } 
