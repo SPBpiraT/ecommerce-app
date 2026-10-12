@@ -1,6 +1,6 @@
-﻿using ecommerce_app.backend.web.Models.Payment;
+﻿using ecommerce_app.backend.web.Models.YooKassaClient;
 
-namespace ecommerce_app.backend.web.Services.Payment
+namespace ecommerce_app.backend.web.Services.YooKassaClient
 {
     public interface IYooKassaClient
     {

@@ -1,10 +1,10 @@
 ﻿using ecommerce_app.backend.web.Common.Configuration;
-using ecommerce_app.backend.web.Models.Payment;
+using ecommerce_app.backend.web.Models.YooKassaClient;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace ecommerce_app.backend.web.Services.Payment
+namespace ecommerce_app.backend.web.Services.YooKassaClient
 {
     public class YooKassaClient : IYooKassaClient
     {
