@@ -1,4 +1,4 @@
-﻿namespace ecommerce_app.backend.web.Models.Payment
+﻿namespace ecommerce_app.backend.web.Models.YooKassaClient
 {
     public class YooKassaAmount
     {
