@@ -3,9 +3,8 @@ using ecommerce_app.backend.web.Middlewares;
 using ecommerce_app.backend.web.Services.Auth;
 using ecommerce_app.backend.web.Services.Email;
 using ecommerce_app.backend.web.Services.Order;
-using ecommerce_app.backend.web.Services.Payment;
 using ecommerce_app.backend.web.Services.User;
-
+using ecommerce_app.backend.web.Services.YooKassaClient;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
 using System.Data;
