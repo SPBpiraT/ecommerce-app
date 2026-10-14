@@ -37,7 +37,7 @@ namespace ecommerce_app.backend.web.Services.YooKassaClient
 
             var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_settings.ShopId}:{_settings.SecretKey}"));
 
-            using var request = new HttpRequestMessage(HttpMethod.Post, "https://yookassa.ru");
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.yookassa.ru/v3/payments");
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authToken);
 
             request.Headers.Add("Idempotence-Key", Guid.NewGuid().ToString());
