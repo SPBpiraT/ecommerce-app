@@ -31,6 +31,13 @@ namespace ecommerce_app.backend.web.Middlewares
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsJsonAsync(new { Message = aex.Message, StackTrace = aex.StackTrace });
             }
+            catch (PaymentGatewayException pex)
+            {
+                _logger.LogError(pex, "Payment gateway error");
+
+                context.Response.StatusCode = 502;
+                await context.Response.WriteAsJsonAsync(new { Message = pex.Message, StackTrace = pex.StackTrace }); //TODO: Remove stacktraces in prod
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occured");
