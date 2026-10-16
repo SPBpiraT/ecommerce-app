@@ -1,6 +1,10 @@
 ﻿using ecommerce_app.backend.web.Common.Providers;
+using ecommerce_app.backend.web.Services.YooKassaClient;
+using ecommerce_app.backend.web.Models.Order;
+
 using Dapper;
 using System.Data;
+using ecommerce_app.backend.web.Exceptions;
 
 namespace ecommerce_app.backend.web.Services.Order
 {
@@ -8,15 +12,61 @@ namespace ecommerce_app.backend.web.Services.Order
     {
         private readonly IDbConnection _dbConnection;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IYooKassaClient _yooKassaClient;
 
         public OrderService(IDbConnection dbConnection,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            IYooKassaClient yooKassaClient)
         {
             _dbConnection = dbConnection;
             _dateTimeProvider = dateTimeProvider;
+            _yooKassaClient = yooKassaClient;
         }
 
-        public async Task<Entities.Order> CreateAsync(Entities.Order order, CancellationToken cancellationToken = default)
+        public async Task<CreateOrderResponse> CheckoutAsync(CreateOrderRequest request, Guid userId, CancellationToken cancellationToken = default)
+        {
+            var orderId = Guid.NewGuid();
+
+            var order = new Entities.Order
+            {
+                Id = orderId,
+                UserId = userId,
+                TotalAmount = request.TotalAmount,
+                Status = "Pending",
+                PaymentId = null,
+                Created = _dateTimeProvider.UtcNow
+            };
+
+            try
+            {
+                await CreateAsync(order, cancellationToken);
+
+                var yooKassaResponse = await _yooKassaClient.CreatePaymentAsync(orderId, order.TotalAmount, cancellationToken);
+
+                if (yooKassaResponse == null || yooKassaResponse.Confirmation == null)
+                {
+                    throw new PaymentGatewayException("Failed to initiate payment via YooKassa.");
+                }
+
+                await UpdatePaymentInfoAsync(orderId, yooKassaResponse.Id, cancellationToken);
+
+                var response = new CreateOrderResponse
+                {
+                    OrderId = orderId,
+                    Status = order.Status,
+                    PaymentUrl = yooKassaResponse.Confirmation.ConfirmationUrl
+                };
+
+                return response;
+            }
+            catch (Exception)
+            {
+                await UpdateStatusAsync(orderId, "Canceled", cancellationToken);
+                throw;
+            }
+        }
+
+        public async Task CreateAsync(Entities.Order order, CancellationToken cancellationToken = default)
         {
             const string sql = @"
                 INSERT INTO orders (id, user_id, total_amount, status, payment_id, created, updated)
@@ -24,7 +74,6 @@ namespace ecommerce_app.backend.web.Services.Order
 
             var command = new CommandDefinition(sql, order, cancellationToken: cancellationToken);
             await _dbConnection.ExecuteAsync(command);
-            return order;
         }
 
         public async Task UpdatePaymentInfoAsync(Guid orderId, string paymentId, CancellationToken cancellationToken = default)
