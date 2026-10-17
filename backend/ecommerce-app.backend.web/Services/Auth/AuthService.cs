@@ -79,15 +79,7 @@ namespace ecommerce_app.backend.web.Services.Auth
 
             var rawToken = await _userService.GenerateAndSaveConfirmationTokenAsync(userModel.Id, cancellationToken);
 
-            var confirmationLink = $"https://localhost:7008/auth/confirm-email?token={rawToken}";
-
-            var emailBody = $@"
-                <h2>Welcome to EcommApp!</h2>
-                <p>Thank you for registering. To confirm your email address, please click the link below:</p>
-                <p><a href='{confirmationLink}' style='padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Confirm Email</a></p>
-                <p>This link is valid for 24 hours.</p>";
-
-            await _emailService.SendEmailAsync(request.Email, "Confirm your registration", emailBody, cancellationToken);
+            await _emailService.SendConfirmationEmailAsync(request.Email, rawToken, cancellationToken);
 
             return new RegisterResponse { UserId = userModel.Id };
         }
