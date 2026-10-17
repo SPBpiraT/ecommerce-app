@@ -77,22 +77,7 @@ namespace ecommerce_app.backend.web.Services.Auth
 
             userModel = await _userService.CreateAsync(userModel, cancellationToken);
 
-            var rawToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-            var tokenHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(rawToken)));
-
-            var now = _dateTimeProvider.UtcNow;
-            var expiresAt = now.AddHours(24);
-
-            var confirmationToken = new EmailConfirmationToken
-            {
-                Id = Guid.NewGuid(),
-                UserId = userModel.Id,
-                TokenHash = tokenHash,
-                ExpiresAt = expiresAt,
-                Created = now
-            };
-
-            await _userService.SaveConfirmationTokenAsync(confirmationToken, cancellationToken);
+            var rawToken = await _userService.GenerateAndSaveConfirmationTokenAsync(userModel.Id, cancellationToken);
 
             var confirmationLink = $"https://localhost:7008/auth/confirm-email?token={rawToken}";
 
