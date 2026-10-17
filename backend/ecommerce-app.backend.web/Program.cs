@@ -1,10 +1,8 @@
 using ecommerce_app.backend.web.Common;
 using ecommerce_app.backend.web.Middlewares;
-using ecommerce_app.backend.web.Services.Auth;
-using ecommerce_app.backend.web.Services.Email;
-using ecommerce_app.backend.web.Services.Order;
-using ecommerce_app.backend.web.Services.User;
+using ecommerce_app.backend.web.Services;
 using ecommerce_app.backend.web.Services.YooKassaClient;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
 using System.Data;
@@ -14,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Add services to the container.
+builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
+builder.Services.AddApplicationServices();
+builder.Services.AddCommonServices(builder.Configuration);
+builder.Services.AddHttpClient<IYooKassaClient, YooKassaClient>();
+
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 
@@ -55,15 +58,6 @@ if (builder.Environment.IsDevelopment())
         });
     });
 }
-
-builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddTransient<IEmailService, EmailService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddCommonServices(builder.Configuration);
-
-builder.Services.AddHttpClient<IYooKassaClient, YooKassaClient>();
 
 var app = builder.Build();
 
