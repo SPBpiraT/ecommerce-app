@@ -5,6 +5,8 @@ using ecommerce_app.backend.web.Common.Providers;
 
 using System.Data;
 using Dapper;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ecommerce_app.backend.web.Services.User
 {
@@ -141,14 +143,31 @@ namespace ecommerce_app.backend.web.Services.User
             return user.MapToModel();
         }
 
-        public async Task SaveConfirmationTokenAsync(EmailConfirmationToken token, CancellationToken cancellationToken = default)
+        public async Task<string> GenerateAndSaveConfirmationTokenAsync(Guid userId, CancellationToken cancellationToken = default)
         {
+            var rawToken = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+            var tokenHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(rawToken)));
+
+            var now = _dateTimeProvider.UtcNow;
+            var expiresAt = now.AddHours(24);
+
+            var confirmationToken = new EmailConfirmationToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                TokenHash = tokenHash,
+                ExpiresAt = expiresAt,
+                Created = now
+            };
+
             const string sql = @"
                 INSERT INTO email_confirmation_tokens (id, user_id, token_hash, expires_at)
                 VALUES (@Id, @UserId, @TokenHash, @ExpiresAt);";
 
-            var command = new CommandDefinition(sql, token, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(sql, confirmationToken, cancellationToken: cancellationToken);
             await _dbConnection.ExecuteAsync(command);
+
+            return rawToken;
         }
 
         public async Task<EmailConfirmationToken?> GetTokenInfoAsync(string tokenHash, CancellationToken cancellationToken = default)
