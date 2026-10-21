@@ -355,5 +355,8 @@ MigrationBackup/
 # SQLite
 sqlite_db/
 
-#Other
+# Local env files
+.env
+
+# Other
 INFO.txt
