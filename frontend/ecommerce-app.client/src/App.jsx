@@ -1,8 +1,9 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import MainLayout from './components/MainLayout'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import ConfirmEmailPage from './pages/ConfirmEmailPage'
+import LoginPage from './pages/auth/LoginPage'
+import RegisterPage from './pages/auth/RegisterPage'
+import ConfirmEmailPage from './pages/auth/ConfirmEmailPage'
+import RegisterSuccessPage from './pages/auth/RegisterSuccessPage'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: '/confirm-email',
         element: <ConfirmEmailPage />,
+      },
+      {
+        path: '/register-success',
+        element: <RegisterSuccessPage />,
       },
       {
         path: '/wall',
