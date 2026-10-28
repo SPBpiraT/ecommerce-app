@@ -26,6 +26,7 @@ export default function LoginPage() {
 
   return (
     <div className="my-12 bg-slate-900 border border-slate-800 p-8 rounded-xl">
+
       <h2 className="text-2xl font-bold text-slate-100 mb-6 text-center">Sign In</h2>
       
       {error && (
@@ -35,6 +36,7 @@ export default function LoginPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+
         <div>
           <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Username</label>
           <input 
@@ -64,11 +66,13 @@ export default function LoginPage() {
         >
           {loading ? 'Signing In...' : 'Sign In'}
         </button>
+
       </form>
 
       <p className="text-sm text-slate-400 text-center mt-6">
         New to Ecomm? <Link to="/register" className="text-teal-400 hover:underline">Create an account</Link>
       </p>
+      
     </div>
   );
 }
