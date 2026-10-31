@@ -51,7 +51,7 @@ if (builder.Environment.IsDevelopment())
     {
         options.AddPolicy("DevReactPolicy", policy =>
         {
-            policy.WithOrigins("http://localhost:5173") //React
+            policy.WithOrigins("https://localhost:5173") //React
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();

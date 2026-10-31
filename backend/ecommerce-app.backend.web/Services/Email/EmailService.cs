@@ -19,7 +19,7 @@ namespace ecommerce_app.backend.web.Services.Email
         {
             var subject = "Confirm your registration.";
 
-            var confirmationLink = $"https://localhost:7008/auth/confirm-email?token={rawToken}";
+            var confirmationLink = $"https://localhost:5173/confirm-email?token={rawToken}";
 
             var emailBody = $@"
                 <h2>Welcome to EcommApp!</h2>
