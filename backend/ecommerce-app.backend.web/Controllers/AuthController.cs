@@ -83,11 +83,7 @@ namespace ecommerce_app.backend.web.Controllers
 
             await _authService.ConfirmEmailAsync(token, cancellationToken);
 
-            return Content(@"
-                <div style='text-align: center; margin-top: 50px; font-family: Arial, sans-serif;'>
-                    <h2 style='color: #28a745;'>Email Confirmed Successfully!</h2>
-                    <p>Your account is now active. You can close this tab and log in.</p>
-                </div>", "text/html");
+            return Ok(new { Message = "Email confirmed successfully." });
         }
     }
 }
