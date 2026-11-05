@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +18,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await login(username, password);
+      const data = await login(username, password);
+      loginUser({ username: username }); 
       navigate('/wall');
     } catch (err) {
       setError(err.response?.data?.Message || 'Invalid username or password.');

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
   // Auth
-  const [user, setUser] = useState(null); 
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen h-screen bg-slate-950 flex flex-col">
@@ -40,7 +41,7 @@ export default function MainLayout() {
           </button>
 
           {user ? (
-            <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+            <div className="flex items-center gap-2 bg-slate-800 px-2 py-1.5 rounded-lg border border-slate-700 hover:bg-teal-400 transition-colors">
               <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
               <span className="text-sm font-medium">{user.username}</span>
             </div>
