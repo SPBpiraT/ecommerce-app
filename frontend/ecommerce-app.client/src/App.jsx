@@ -5,6 +5,7 @@ import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import ConfirmEmailPage from './pages/auth/ConfirmEmailPage'
 import RegisterSuccessPage from './pages/auth/RegisterSuccessPage'
+import ProfilePage from './pages/profile/ProfilePage'
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             <p className="text-slate-400 text-sm">WallPosts coming soon.</p>
           </div>
         )
+      },
+      {
+        path: '/profile',
+        element: <ProfilePage />,
       }
     ]
   },
