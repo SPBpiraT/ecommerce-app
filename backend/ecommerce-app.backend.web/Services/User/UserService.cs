@@ -215,5 +215,27 @@ namespace ecommerce_app.backend.web.Services.User
             var command = new CommandDefinition(sql, new { Id = tokenId }, cancellationToken: cancellationToken);
             await _dbConnection.ExecuteAsync(command);
         }
+
+        public async Task<GetUserProfileResponse?> GetUserProfileAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            const string sql = @"
+                SELECT 
+                    u.username,
+                    u.email,
+                    u.created,
+                    ui.first_name AS firstname,
+                    ui.last_name AS lastname,
+                    ui.age,
+                    ui.birthdate,
+                    ui.city,
+                    ui.avatar_url AS avatarurl,
+                    ui.bio
+                FROM users u
+                LEFT JOIN user_info ui ON u.id = ui.user_id
+                WHERE u.id = @UserId;";
+
+            var command = new CommandDefinition(sql, new { UserId = userId }, cancellationToken: cancellationToken);
+            return await _dbConnection.QueryFirstOrDefaultAsync<GetUserProfileResponse>(command);
+        }
     }
 }
