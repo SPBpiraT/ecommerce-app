@@ -14,5 +14,6 @@ namespace ecommerce_app.backend.web.Services.User
         Task UpdateUserAsync(UserModel model, CancellationToken cancellationToken = default);
         Task ConfirmEmailStatusAsync(Guid userId, CancellationToken cancellationToken = default);
         Task DeleteConfirmationTokenAsync(Guid tokenId, CancellationToken cancellationToken = default);
+        Task<GetUserProfileResponse?> GetUserProfileAsync(Guid userId, CancellationToken cancellationToken = default);
     }
 }

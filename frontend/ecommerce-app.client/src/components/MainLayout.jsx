@@ -41,14 +41,17 @@ export default function MainLayout() {
           </button>
 
           {user ? (
-            <div className="flex items-center gap-2 bg-slate-800 px-2 py-1.5 rounded-lg border border-slate-700 hover:bg-teal-400 transition-colors">
+            <Link 
+              to="/profile" 
+              className="flex items-center gap-2 bg-slate-800 px-2 py-1.5 rounded-lg border border-slate-700 hover:bg-teal-400 hover:text-slate-950 text-slate-100 transition-colors"
+            >
               <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
               <span className="text-sm font-medium">{user.username}</span>
-            </div>
+            </Link>
           ) : (
             <button 
               onClick={() => navigate('/login')}
-              className="px-2 py-1.5 bg-teal-500 text-sm font-bold rounded-lg hover:bg-teal-400 transition-colors"
+              className="px-2 py-1.5 bg-teal-500 text-sm font-bold rounded-lg hover:bg-teal-400 hover:text-slate-100 transition-colors"
             >
               Login
             </button>
@@ -59,18 +62,18 @@ export default function MainLayout() {
 
       <div className="flex flex-1 h-[calc(100vh-4rem)]">
 
-        <aside className={`bg-slate-900 flex flex-col border-r border-slate-800 overflow-hidden ${isSidebarOpen ? 'w-64 min-w-12' : 'w-0'}`}>
+        <aside className={`bg-slate-900 flex flex-col border-r border-slate-800 overflow-hidden ${isSidebarOpen ? 'w-64 min-w-13' : 'w-0'}`}>
 
           <nav className="flex-1 p-4 space-y-2">
-            <Link to="/" className="flex gap-3 px-0 min-[330px]:px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-teal-400 transition-all">
+            <Link to="/" className="flex gap-3 px-0 min-[380px]:px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-teal-400 transition-all">
               <span>🏠</span> 
               <span className="truncate">Main</span>
             </Link>
-            <Link to="/wall" className="flex gap-3 px-0 min-[330px]:px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-teal-400 transition-all">
+            <Link to="/wall" className="flex gap-3 px-0 min-[380px]:px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-teal-400 transition-all">
               <span>📝</span> 
               <span className="truncate">Wall</span>
             </Link>
-            <Link to="/catalog" className="flex gap-3 px-0 min-[330px]:px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-teal-400 transition-all">
+            <Link to="/catalog" className="flex gap-3 px-0 min-[380px]:px-3 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-teal-400 transition-all">
               <span>📦</span> 
               <span className="truncate">Catalog</span>
             </Link>
@@ -82,7 +85,7 @@ export default function MainLayout() {
 
         </aside>
 
-        <main className="overflow-y-auto p-0 min-[200px]:p-6 mx-auto">
+        <main className="overflow-y-auto p-6 mx-auto">
 
             <Outlet />
             
